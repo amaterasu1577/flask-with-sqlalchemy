@@ -1,0 +1,10 @@
+<!-- templates/product.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <a href="{{ url_for('home') }}">← Back to list</a>
+
+  <h1>{{ product.name }}</h1>
+  <p>ID: {{ product.id }}</p>
+{% endblock %}
