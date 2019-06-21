@@ -24,6 +24,7 @@ from schemas import products_schema, product_schema
 admin = Admin(app, template_mode='bootstrap3')
 admin.add_view(ModelView(Product, db.session))
 
+
 @app.route('/')
 def home():
     products = db.session.query(Product).all()
@@ -41,8 +42,15 @@ def hello():
 
 @app.route('/products')
 def products():
-    products = db.session.query(Product).all() # SQLAlchemy request => 'SELECT * FROM products'
+    from tasks import very_slow_add
+    very_slow_add.delay(1, 2) # This pushes a task to Celery and does not block.
+    products = db.session.query(Product).all()
     return products_schema.jsonify(products)
+
+""" @app.route('/products')
+def products():
+    products = db.session.query(Product).all() # SQLAlchemy request => 'SELECT * FROM products'
+    return products_schema.jsonify(products) """
 
 @app.route('/products/<int:id>', methods=['GET'])
 def get_product(id):
